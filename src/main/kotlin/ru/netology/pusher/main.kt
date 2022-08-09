@@ -15,8 +15,15 @@ fun main() {
 
     FirebaseApp.initializeApp(options)
 
-    val message = Message.builder()
-        .putData("action", "LIKE")
+    // val message = likeNotification(Actions.POST.action)
+    val message = postNotification(Actions.POST.action)
+
+    FirebaseMessaging.getInstance().send(message)
+}
+
+private fun likeNotification(action: String): Message {
+    return Message.builder()
+        .putData("action", action)
         .putData(
             "content",
             """{
@@ -28,6 +35,23 @@ fun main() {
         )
         .setToken(TOKEN)
         .build()
+}
 
-    FirebaseMessaging.getInstance().send(message)
+private fun postNotification(action: String): Message {
+    return Message.builder()
+        .putData("action", action)
+        .putData(
+            "content",
+            """{
+            "postId": 3,
+            "postAuthor": "Артем Мостяев",
+            "postContent": "Таймбоксинг — отличный способ навести порядок в своём календаре и разобраться с делами, которые долго откладывали на потом. Его главный принцип — на каждое дело заранее выделяется определённый отрезок времени. В это время вы работаете только над одной задачей, не переключаясь на другие. Собрали советы, которые помогут внедрить таймбоксинг \uD83D\uDC47\uD83C\uDFFB"
+            }""".trimIndent()
+        )
+        .setToken(TOKEN)
+        .build()
+}
+
+enum class Actions(val action: String) {
+    LIKE(action = "LIKE"), POST(action = "POST")
 }
